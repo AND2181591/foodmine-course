@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit {
     let foodsObservable: Observable<Food[]>;
 
     this.activatedRoute.params.subscribe(params => {
-      debugger;
       if (params.searchTerm) {
         foodsObservable = this.foodService.getAllFoodsBySearchTerm(params.searchTerm);
       } else if (params.tag) {

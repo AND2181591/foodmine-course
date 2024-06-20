@@ -1,9 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TitleComponent } from '../../partials/title/title.component';
 import { TextInputComponent } from '../../partials/text-input/text-input.component';
 import { DefaultButtonComponent } from '../../partials/default-button/default-button.component';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login-page',
@@ -19,12 +20,17 @@ export class LoginPageComponent implements OnInit {
   public returnUrl = '';
 
   private formBuilder = inject(FormBuilder);
+  private userService = inject(UserService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]], 
       password: ['', Validators.required]
     });
+
+    this.returnUrl = this.activatedRoute.snapshot.queryParams.returnUrl;
   }
 
   get fc() {
@@ -35,7 +41,9 @@ export class LoginPageComponent implements OnInit {
     this.isSubmitted = true;
     if (this.loginForm.invalid) return;
 
-    alert(`email: ${this.fc.email.value} , 
-      password: ${this.fc.password.value}`);
+    this.userService.login({ email: this.fc.email.value, password: this.fc.password.value })
+      .subscribe(() => {
+        this.router.navigateByUrl(this.returnUrl);
+      });
   }
 }
