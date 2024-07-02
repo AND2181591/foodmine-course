@@ -26,6 +26,5 @@ const generateTokenResponse = (user: any) => {
     user.token = token;
     return user;
 }
-console.log('test')
 
 export default router;
